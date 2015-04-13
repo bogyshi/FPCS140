@@ -1,0 +1,16 @@
+body {
+	background-color: green;
+}
+
+.box{
+	width: 1000px;
+	height: 600px;
+	text-align: center;
+	color: orange;
+	font-family: 'georgian';
+	background-color: blue;
+	position: absolute;
+    top: 25%;
+    left: 25%;
+	border-radius: 15px;
+}
