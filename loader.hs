@@ -32,9 +32,13 @@ main = scotty 3000 $ do
     post ":/post" $ do
     	 zipcode <- param "zip"
 
+<<<<<<< HEAD
   	-- response' <- return (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++zipcode++",us") [])
 	 --response <- response'
 	 --let l = further $ calculate zipcode
+=======
+  	 --response <- (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++zipcode++",us") [])
+>>>>>>> 44519bab55085f618634dcb3a4a7b4e3dcae9a89
 	 let l = further $ calculate zipcode
   	 let w = decode $ (fromString l)
   	 let coverage =  show (W.c (fromJust (w :: Maybe W.Weather)))
