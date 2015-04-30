@@ -1,5 +1,11 @@
 body {
-	background-color: green;
+        background-image: url("pictures/weather.jpg");
+}
+
+.center {
+    text-align: center;
+    font-size: 40px;
+    font-color: white;
 }
 
 .box{

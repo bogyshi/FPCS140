@@ -25,36 +25,48 @@ import System.IO.Unsafe
 
 main = scotty 3000 $ do
     get "/style.css" $ file "style.css"
+    get "/pictures/weather.jpg" $ file "pictures/weather.jpg"
     get "/" $ file "./index.html" 
    
     
     post ":/post" $ do
     	 zipcode <- param "zip"
 
-  	 response' <- liftIO (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++zipcode++",us") [])
-	 --response <- response'
-	 let l = response'
-	 --let l = further $ calculate zipcode
-  	 let w = decode $ (fromString l)
-  	 let coverage =  show (W.c (fromJust (w :: Maybe W.Weather)))
+  	 response <- liftIO (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++zipcode++",us") [])
+	 let l = response
+	 --liftIO $ print l
+  	 let a = decode $ (fromString l)
+	 liftIO $ print a
 
-	 html . renderText $ 
-                            html_ $ 
-                                  body_ $ do
-				  	h1_ $ fromString coverage
+	 let result = (isJust (a))
+	 liftIO $ print result
 
-calculate :: String -> (IO String)
-calculate s = do response <- (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++s++",us") [])
-	      	 return response
+	 case result of
+	    True -> html.renderText $ successPage (show (W.c (fromJust (a :: (Maybe W.Weather)))))
+	    False -> html.renderText $ errorPage
+	    	 --let coverage = show (W.c (fromJust (a :: (Maybe W.Weather))))
+	      	 --html . renderText $ 
+                 --           html_ $ 
+                 --                 body_ $ do
+		 --		  	h1_ $ fromString coverage
+	    --else liftIO $ html.get "/" $ file "./error.html"
 
-further :: (IO String) -> String
-further a = unsafePerformIO a
 	      	 
 
 
+--successPage :: String -> Html
+successPage s = html_ $
+	      	    body_ $ do
+		    	  h1_ $ fromString s
 
-   -- get "/:word" $ do
---	text <- liftIO $ readFile("test.html")
-      --  html $ L.pack text
---the purpose of this code is to see if I can load an html file
+errorPage = html_ $
+	    	  body_ $ do
+		  	h1_ $ "whoops! we have an error"
+			br_ []
+			p_ $ do
+			    "you most likely typed " 
+			    a_ [href_ "http://localhost:3000/"] "here"
+			    " in the wrong zipcode"
+			
 
+-- make the pages take in a string with the file path for an image
