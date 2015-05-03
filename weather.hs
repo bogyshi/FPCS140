@@ -20,12 +20,18 @@ data Weather = Weather
              , coord :: Coord
              , ws :: [W]
              , wmain :: Main
+	     , wind :: Wind
 	     , c :: Clouds
              } deriving (Show)
 
 data Clouds = Clouds
     { coverage :: Int
     } 
+
+data Wind = Wind
+     {
+       speed::Double
+     } 
 
 data Coord = Coord
            { lon :: Int
@@ -39,7 +45,10 @@ data W = W
        } deriving (Show)
 
 data Main = Main
-    { temp :: Int
+    { temp :: Double
+    , humidity :: Int
+    --, tempMn :: Int
+    --, tempMx :: Int
     } deriving (Show)
 
 
@@ -53,12 +62,17 @@ instance FromJSON Weather where
                            <*> v .: "coord"
                            <*> v .: "weather"
                            <*> v .: "main"
+			   <*> v .: "wind"
 			   <*> v .: "clouds"
 
 instance FromJSON Coord where
     parseJSON (Object v) = Coord
                            <$> v .: "lon"
                            <*> v .: "lat"
+
+instance FromJSON Wind where
+    parseJSON (Object v) = Wind
+    	      	      	   <$> v .: "speed"
 
 instance FromJSON W where
     parseJSON (Object v) = W
@@ -74,9 +88,15 @@ instance ToJSON W where
 instance FromJSON Main where
     parseJSON (Object v) = Main
                            <$> v .: "temp"
+			   <*> v .: "humidity"
+			   -- <*> v .: "temp_min"
+			   -- <*> v .: "temp_max"
 
 instance Show Clouds where 
 	 show (Clouds c) = (show (c::Int))
+
+instance Show Wind where
+	 show (Wind w) = (show (w::Double))
 
 getCover :: Clouds -> Int
 getCover (Clouds a) = a
@@ -91,11 +111,12 @@ main = do
   x <- getLine
   response <- snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++x++",us") []
   let w = decode (fromString response)
+  print w
   let coverage =  (c (fromJust (w :: Maybe Weather)))
   print coverage
-  --mapM_ print . T.map w_description . ws . fromJust $ (w :: Maybe Weather)
+  mapM_ print . ws . fromJust $ (w :: Maybe Weather)
   print $ compute (getCover coverage)
- -- mapM_ print . ws . fromJust $ ((fromString response) :: Maybe Weather)
+  print $ fromJust $ (w :: Maybe Weather)
 
 
 --decod is how you take a json to a data type 
