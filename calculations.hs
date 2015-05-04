@@ -2,12 +2,12 @@
 
 module Calculations where
 
-forecast :: Int -> Double -> Double -> Int -> String
-forecast coverage wind temp humid | hot (temp) = "It is currently " ++ (show (truncate temp)) ++ " degrees farenheight. Grab a fan and cool down."
-	 	       	    	  | cold (temp) = "It is currently" ++ (show temp) ++ " degrees farenheight. Consider some heavy clothes."
-				  | windy (wind) = "It is pretty windy outside at " ++ (show wind) ++ " m/s. Try a wind breaker"
-				  | cloudy (coverage) = "The sky is " ++ (show (quot coverage 10)) ++ " clouds, itll be cooler than youd expect."
-				  | otherwise = "pretty calm day"
+forecast :: Int -> Double -> Double -> Int -> (String,String)
+forecast coverage wind temp humid | hot (temp) = ("It is currently " ++ (show (truncate temp)) ++ " degrees farenheight. Grab a fan and cool down.", "pictures/sunny.jpg")
+	 	       	    	  | cold (temp) = ("It is currently" ++ (show temp) ++ " degrees farenheight. Consider some heavy clothes.","pictures/cold.jpg")
+				  | windy (wind) = ("It is pretty windy outside at " ++ (show wind) ++ " m/s. Try a wind breaker","pictures/windy.jpg")
+				  | cloudy (coverage) = ("The sky is " ++ (show (quot coverage 10)) ++ " clouds, itll be cooler than youd expect.","pictures/cloudy.jpg")
+				  | otherwise = ("pretty calm day","")
 
 hot :: Double -> Bool
 hot t = if t >= 60 then True else False
@@ -28,7 +28,7 @@ showWind :: Double -> String
 showWind w = "Current wind speed: " ++ show w ++ " meters per second"
 
 showCover :: Int -> String 
-showCover c = "Current cloud coverage: " ++ show (quot c 10) ++ "/10s of the sky are clouds"
+showCover c = "Current cloud coverage: " ++ show (quot c 10) ++ "/10ths of the sky are clouds"
 
 showHumid :: Int -> String
 showHumid h = "Current relative humidity: " ++ show h ++ "%"

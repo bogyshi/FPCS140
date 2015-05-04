@@ -48,6 +48,7 @@ main = scotty 3000 $ do
 	 let windspeed = (W.speed (W.wind (request))) -- in m/s
 	 let temp = ((W.temp $ W.wmain (request))*(9/5) -459.67) --Farenheit
 	 let h = (W.humidity $ W.wmain (request))
+	 let s = snd(C.forecast coverage windspeed temp h)
 	 liftIO $ print result
 	 --liftIO $ print request
 	 --liftIO $ print coverage
@@ -56,7 +57,7 @@ main = scotty 3000 $ do
 	 --liftIO $ print h
 
 	 case result of
-	    True -> html.renderText $ successPage coverage windspeed temp h
+	    True -> html.renderText $ successPage coverage windspeed temp h s
 	    False -> html.renderText $ errorPage
 	    	 --let coverage = show (W.c (fromJust (a :: (Maybe W.Weather))))
 	      	 --html . renderText $ 
@@ -69,9 +70,9 @@ main = scotty 3000 $ do
 
 
 --successPage :: String -> Html
-successPage c w t h = html_ $
-	      	         body_ $ do
-		    	   h1_ $ fromString(C.forecast c w t h)
+successPage c w t h s= html_ $
+	      	         with body_ [style_ (fromString $ "background-image: url(\"" ++ (s::String) ++ "\");")] $ do
+		    	   h1_ $ fromString(fst(C.forecast c w t h))
 			   br_ []
 			   p_ $ fromString (C.showTemp t)
 			   br_ []
