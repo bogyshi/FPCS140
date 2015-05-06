@@ -7,6 +7,7 @@ body {
 input[type=submit] {
 	background-color: red;
 	border-radius: 5px;
+	
 	border-color: red;
 	height: 15%;
 	width: 20%;
@@ -15,10 +16,11 @@ input[type=submit] {
 
 #zip {
 	font-size: 300%;
+	float: center;
 }
 
 input[type=text]{
-	
+	color: #CCCCCC;
 	width: 40%;
 	font-size: 300%
 }
