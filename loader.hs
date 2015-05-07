@@ -29,6 +29,11 @@ main = scotty 3000 $ do
     get "/error.css" $ file "error.css"
     get "/pictures/weather.jpg" $ file "pictures/weather.jpg"
     get "/pictures/sunny.jpg" $ file "pictures/sunny.jpg"
+    get "/pictures/cold.jpg" $ file "pictures/cold.jpg"
+    get "/pictures/windy.jpg" $ file "pictures/windy.jpg"
+    get "/pictures/cloudy.jpg" $ file "pictures/cloudy.jpg"
+    get "/pictures/calm.jpg" $ file "pictures/calm.jpg"
+    get "/pictures/rain.jpg" $ file "pictures/rain.jpg"
     get "/" $ file "./index.html" 
    
     
@@ -48,7 +53,8 @@ main = scotty 3000 $ do
 	 let windspeed = (W.speed (W.wind (request))) -- in m/s
 	 let temp = ((W.temp $ W.wmain (request))*(9/5) -459.67) --Farenheit
 	 let h = (W.humidity $ W.wmain (request))
-	 let s = snd(C.forecast coverage windspeed temp h)
+	 let d = (W.w_main $ Prelude.head $ W.ws(request))
+	 let s = snd(C.forecast coverage windspeed temp h d)
 	 liftIO $ print result
 	 --liftIO $ print request
 	 --liftIO $ print coverage
@@ -57,7 +63,7 @@ main = scotty 3000 $ do
 	 --liftIO $ print h
 
 	 case result of
-	    True -> html.renderText $ successPage coverage windspeed temp h s
+	    True -> html.renderText $ successPage coverage windspeed temp h s d
 	    False -> html.renderText $ errorPage
 	    	 --let coverage = show (W.c (fromJust (a :: (Maybe W.Weather))))
 	      	 --html . renderText $ 
@@ -70,17 +76,21 @@ main = scotty 3000 $ do
 
 
 --successPage :: String -> Html
-successPage c w t h s= html_ $
-	      	         with body_ [style_ (fromString $ "background-image: url(\"" ++ (s::String) ++ "\");")] $ do
-		    	   h1_ $ fromString(fst(C.forecast c w t h))
+successPage c w t h s d= html_ $
+	      	         with body_ [style_ (fromString $ "background-image: url(\"" ++ (s::String) ++ "\"); ")] $ do
+		    	   with h1_ [style_ ("text-align: center;")]$ fromString(fst(C.forecast c w t h d))
 			   br_ []
-			   p_ $ fromString (C.showTemp t)
-			   br_ []
-			   p_ $ fromString (C.showWind w)
-			   br_ []
-			   p_ $ fromString (C.showCover c)
-			   br_ []
-			   p_ $ fromString (C.showHumid h)
+			   with div_ [style_ (fromString $ (C.colorText t d) ++ ";")] $ do
+			    p_ $ fromString (C.showTemp t)
+			    br_ []
+			    p_ $ fromString (C.showWind w)
+			    br_ []
+			    p_ $ fromString (C.showCover c)
+			    br_ []
+			    p_ $ fromString (C.showHumid h)
+			    br_ []
+			    p_ $ fromString (C.colorText t d)
+
 
 errorPage = html_ $ do
 	    	 head_ $ do
