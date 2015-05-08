@@ -38,13 +38,17 @@ main = scotty 3000 $ do
    
     
     post ":/post" $ do
-    	 zipcode <- param "zip"
+    	 zipcit <- param "zip"
 
-  	 response <- liftIO (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++zipcode++",us") [])
+  	 response <- liftIO (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++ zipcit ++",us") [])
+	 response' <- liftIO (snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?q="++ zipcit ++",us") [])
 	 let l = response
-	 --liftIO $ print l
-  	 let a = decode $ (fromString l)
+	 let m = response'
 	 
+	 --liftIO $ print l
+  	 let c = decode $ (fromString l)
+	 let b = decode $ (fromString m)
+	 let a = correct c b
 	 liftIO $ print a
 
 	 let result = (isJust (a))
@@ -101,9 +105,11 @@ errorPage = html_ $ do
 		     h1_ $ "whoops! we have an error"
 		     br_ []
 		     p_ $ do
-		     	   "you most likely typed in the wrong zip code click " 
+		     	   "you most likely typed in the zipcode or city wrong. click " 
 			   a_ [href_ "http://localhost:3000/"] "here"
 			   " to try again"
 			
 
 -- make the pages take in a string with the file path for an image
+
+correct c b = if (isJust(c)) then c else b
