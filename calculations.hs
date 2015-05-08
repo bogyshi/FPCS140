@@ -42,5 +42,5 @@ colorText t d | ((cold t) || (rain d)) = "background-color:rgba(192,192,192,0.4)
 	      | otherwise = ""
 
 supaHot :: Double -> String -> Int -> String
-supaHot t d c | ((rain d) || (not (hot(t))) || (not (cloudy c))) = ""
+supaHot t d c | ((rain d) || (not (hot(t))) || ((cloudy c))) = ""
 	      | otherwise = "WARNING: Its a hot day! stay hydrated, and put some Sunscreen on!"
