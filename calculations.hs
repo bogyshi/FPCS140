@@ -8,7 +8,7 @@ forecast coverage wind temp humid descrip | rain (descrip) = ("It is currenly ra
 	 	       	    	  	  | cold (temp) = ("It is currently " ++ (show(truncate temp)) ++ " degrees farenheight. Consider some heavy clothes.","pictures/cold.jpg")
 				  	  | windy (wind) = ("It is pretty windy outside at " ++ (show wind) ++ " m/s. Try a wind breaker","pictures/windy.jpg")
 				  	  | cloudy (coverage) = ("The sky is " ++ (show (coverage)) ++ "% clouds, itll be cooler than youd expect.","pictures/cloudy.jpg")
-				  	  | otherwise = ("pretty calm day","pictures/calm.jpg")
+				  	  | otherwise = ("pretty calm day, a good day to lay in the grass and contemplate life","pictures/calm.jpg")
 
 hot :: Double -> Bool
 hot t = if t >= 75 then True else False
@@ -23,7 +23,7 @@ windy :: Double -> Bool
 windy w = if w >= 6 then True else False
 
 cloudy :: Int -> Bool
-cloudy c = if c >= 1 then True else False
+cloudy c = if c >= 40 then True else False
 
 showTemp :: Double -> String
 showTemp t = "Current temperature: " ++ show (truncate t) ++ " degrees Farenheit"
@@ -40,3 +40,7 @@ showHumid h = "Current relative humidity: " ++ show h ++ "%"
 colorText :: Double -> String -> String
 colorText t d | ((cold t) || (rain d)) = "background-color:rgba(192,192,192,0.4)"
 	      | otherwise = ""
+
+supaHot :: Double -> String -> Int -> String
+supaHot t d c | ((rain d) || (not (hot(t))) || (not (cloudy c))) = ""
+	      | otherwise = "WARNING: Its a hot day! stay hydrated, and put some Sunscreen on!"

@@ -46,6 +46,7 @@ main = scotty 3000 $ do
 	 let m = response'
 	 
 	 --liftIO $ print l
+	 --liftIO $ print m
   	 let c = decode $ (fromString l)
 	 let b = decode $ (fromString m)
 	 let a = correct c b
@@ -93,7 +94,7 @@ successPage c w t h s d= html_ $
 			    br_ []
 			    p_ $ fromString (C.showHumid h)
 			    br_ []
-			    p_ $ fromString (C.colorText t d)
+			    with p_ [style_ ("color:RED")] $ fromString (C.supaHot t d c)
 
 
 errorPage = html_ $ do

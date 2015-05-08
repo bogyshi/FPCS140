@@ -37,6 +37,14 @@ form {
 	color: #7CA6CF;
 }
 
+#subtitle {
+    	padding-top: 20px;
+	font-size: 25px;
+	font-family: Libre Baskerville, Veranda;
+	text-align: center;
+	color: #7CA6CF;
+}
+
 .box{
 	width: 1200px;
 	height: 600px;

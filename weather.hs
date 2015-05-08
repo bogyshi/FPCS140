@@ -80,11 +80,6 @@ instance FromJSON W where
                            <*> v .: "main"
                            <*> v .: "description"
 
-instance ToJSON W where
-    toJSON (W i m d) = object ["id" .= i, "main" .= m, "description" .= d]
-
---to JSON is only if you need to according to the weather api, so not really necessary.
-
 instance FromJSON Main where
     parseJSON (Object v) = Main
                            <$> v .: "temp"
@@ -97,34 +92,3 @@ instance Show Clouds where
 
 instance Show Wind where
 	 show (Wind w) = (show (w::Double))
-
-getCover :: Clouds -> Int
-getCover (Clouds a) = a
-
-compute :: Int -> String
-compute 0 = "notta problemo"
-compute a | a >= 80  = "tis shady"
-	  | otherwise = "nvm"
---get rushils get and post request webstuff
-
-main = do
-  x <- getLine
-  response <- snd <$> curlGetString ("http://api.openweathermap.org/data/2.5/weather?zip="++x++",us") []
-  let w = decode (fromString response)
-  print w
-  let coverage =  (c (fromJust (w :: Maybe Weather)))
-  print coverage
-  mapM_ print . ws . fromJust $ (w :: Maybe Weather)
-  print $ compute (getCover coverage)
-  print $ fromJust $ (w :: Maybe Weather)
-
-
---decod is how you take a json to a data type 
---decode:: (fromJSON a) => String -> a
--- if you have fromJSON erson where
--- decode of bytestring into a datatype. 
---just go to aason to figure this stuff out.
-
--- there is ap roof language like idris, and its wrtiten in haskell, its agda, and its works similar, jsut for theorems and proofs. The most popular one is made by the the french, its call coq.
-
---etherpad for technical interviews
